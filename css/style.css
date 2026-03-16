@@ -64,7 +64,7 @@ nav a:hover { color: var(--accent-color); }
 .slider-container {
     position: relative;
     width: 100%;
-    height: 800px;
+    height: 900px;
     overflow: hidden;
     background-color: #000;
 }
@@ -205,4 +205,171 @@ footer {
     .slider-container { height: 400px; }
     .circles-container { gap: 2rem; }
     .circle-visual { width: 140px; height: 140px; }
+}
+
+/* --- ABOUT PAGE STYLES --- */
+
+/* Founders Grid */
+.founders-section {
+    padding: 4rem 2rem;
+    text-align: center;
+    background-color: #fff;
+}
+
+.founders-section h2 {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 3rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.team-grid {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    position: relative; /* Important for z-index layering */
+    z-index: 1;
+}
+
+.team-card {
+    position: relative;
+    width: 200px;
+    cursor: pointer;
+    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    z-index: 10;
+}
+
+/* Image Styling */
+.team-card img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    transition: all 0.5s ease;
+}
+
+/* Name Styling */
+.team-name {
+    margin-top: 10px;
+    font-weight: 700;
+    color: var(--primary-color);
+    font-size: 1.1rem;
+}
+
+/* --- HOVER EFFECT --- */
+.team-card:hover {
+    transform: translateY(-10px);
+}
+.team-card:hover img {
+    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+}
+
+/* --- ACTIVE / CLICKED STATE (The Expansion) --- */
+/* When a card has the class 'active' */
+.team-card.active {
+    position: fixed; /* Fixes it to the screen center */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px; /* Expanded width */
+    z-index: 1000; /* Sits on top of everything */
+    pointer-events: none; /* Lets clicks pass through to the overlay */
+}
+
+.team-card.active img {
+    height: 400px; /* Expanded height */
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+
+/* Hidden Profile Text (Reveals on click) */
+.profile-details {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    background: white;
+    padding: 0 20px;
+    transition: all 0.5s ease;
+    text-align: left;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.team-card.active .profile-details {
+    max-height: 200px;
+    opacity: 1;
+    padding: 20px;
+    margin-top: -5px; /* Connect to image */
+    pointer-events: auto; /* Allow selecting text inside */
+}
+
+.team-card.active .team-name {
+    display: none; /* Hide small name when expanded */
+}
+
+/* --- TRANSLUCENT BACKGROUND --- */
+/* An overlay that appears when someone is clicked */
+.founders-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(15, 23, 42, 0.85); /* Dark Navy with transparency */
+    z-index: 900;
+    opacity: 0;
+    pointer-events: none; /* Clicks go through when hidden */
+    transition: opacity 0.5s ease;
+}
+
+.founders-overlay.active {
+    opacity: 1;
+    pointer-events: auto; /* Catches clicks to close */
+}
+
+/* --- CORE MEMBERS SECTION --- */
+.core-members-section {
+    background-color: #f8fafc;
+    padding: 4rem 2rem;
+    text-align: center;
+    border-top: 1px solid #e2e8f0;
+}
+
+.core-members-section h2 {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+}
+
+.core-grid {
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
+    flex-wrap: wrap;
+}
+
+.core-card img {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%; /* Circles for core members */
+    object-fit: cover;
+    border: 4px solid white;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin-bottom: 1rem;
+    transition: transform 0.3s;
+}
+
+.core-card:hover img {
+    transform: scale(1.1);
+}
+
+.core-name {
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.core-role {
+    font-size: 0.9rem;
+    color: #64748b;
 }
