@@ -54,7 +54,7 @@
             width: 60px; height: 60px; background-color: rgba(255, 255, 255, 0.1); border-color: transparent;
         }
 
-        /* --- HEADER --- */
+        /* --- HEADER (FIXED VISIBILITY) --- */
         header {
             position: fixed;
             top: 0;
@@ -64,19 +64,16 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            z-index: 9999; /* Ensure it is on top */
             
-            /* FIX: Increase z-index significantly to ensure it is above the slider */
-            z-index: 9999; 
-            
-            /* Ensure background is solid enough to be seen, or blur works correctly */
+            /* FIX: Solid background instead of blur to prevent disappearing */
             background: rgba(15, 23, 42, 0.95); 
-            backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
         .brand-area {
             display: flex; align-items: center; gap: 12px;
-            z-index: 1001;
+            z-index: 10001;
         }
 
         .logo-icon {
@@ -90,7 +87,7 @@
         }
 
         nav { 
-            z-index: 10000; /* Higher than header just in case */
+            z-index: 10001; 
         }
         nav ul { display: flex; gap: 25px; list-style: none; }
         nav a {
@@ -321,15 +318,15 @@
         </nav>
     </header>
 
-    <!-- HERO (Slideshow with IT/Earth images) -->
+    <!-- HERO (Slideshow with SPECIFIC IT/Earth images) -->
     <header class="hero">
         <div class="hero-slider">
-            <!-- Updated seeds for IT/Network/Earth vibe -->
-            <img src="https://picsum.photos/seed/network/1920/1080" class="hero-slide active">
-            <img src="https://picsum.photos/seed/server/1920/1080" class="hero-slide">
-            <img src="https://picsum.photos/seed/data/1920/1080" class="hero-slide">
-            <img src="https://picsum.photos/seed/cyber/1920/1080" class="hero-slide">
-            <img src="https://picsum.photos/seed/globe/1920/1080" class="hero-slide">
+            <!-- Updated with direct Unsplash Tech Links -->
+            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop" class="hero-slide active" alt="Global Network">
+            <img src="https://images.unsplash.com/photo-1558494949-ef526b0042a0?q=80&w=2070&auto=format&fit=crop" class="hero-slide" alt="Server Room">
+            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop" alt="Data Circuit">
+            <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=2070&auto=format&fit=crop" class="hero-slide" alt="Cyber Security">
+            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop" class="hero-slide" alt="Connected Globe">
         </div>
 
         <!-- Animation Class Applied -->
