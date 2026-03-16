@@ -4,213 +4,357 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Theta Solutions</title>
-    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&family=Playfair+Display:ital,wght@1,400;1,700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- RESET & VARS --- */
+        :root {
+            --bg-color: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-color: #e2e8f0;
+            --accent-color: #38bdf8;
+            --font-main: 'Outfit', sans-serif;
+            --font-serif: 'Playfair Display', serif;
+        }
+
+        html, body {
+            margin: 0; padding: 0; box-sizing: border-box;
+            position: relative; width: 100%;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-main);
+            overflow-x: hidden; /* Hide horizontal scroll */
+            line-height: 1.1;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+
+        /* --- GRAIN OVERLAY --- */
+        .noise-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 9998; /* Kept below header */
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3Cfilter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* --- CUSTOM CURSOR --- */
+        .cursor-dot, .cursor-outline {
+            position: fixed; top: 0; left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%; z-index: 10000; pointer-events: none;
+        }
+        .cursor-dot { width: 8px; height: 8px; background-color: var(--text-color); }
+        .cursor-outline { width: 40px; height: 40px; border: 1px solid var(--text-color); transition: width 0.2s, height 0.2s, background-color 0.2s; }
+        a:hover ~ .cursor-outline, button:hover ~ .cursor-outline, .service-card:hover ~ .cursor-outline {
+            width: 60px; height: 60px; background-color: rgba(255, 255, 255, 0.1); border-color: transparent;
+        }
+
+        /* --- HEADER --- */
+        .main-header {
+            position: fixed;
+            top: 0; left: 0; width: 100%;
+            padding: 1.5rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 9999; 
+            background-color: #0f172a; 
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .brand-area { display: flex; align-items: center; gap: 12px; z-index: 10001; }
+        .logo-icon { font-size: 2rem; color: var(--accent-color); font-weight: bold; line-height: 1; }
+        .company-name { font-size: 1.3rem; font-weight: 800; color: white; letter-spacing: 1px; text-transform: uppercase; }
+        nav { z-index: 10001; }
+        nav ul { display: flex; gap: 25px; list-style: none; }
+        nav a { font-size: 0.9rem; font-weight: 500; color: #cbd5e1; text-transform: uppercase; text-decoration: none; transition: color 0.3s; position: relative; }
+        nav a:hover { color: var(--accent-color); }
+        nav a::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -5px; left: 0; background-color: var(--accent-color); transition: width 0.3s ease; }
+        nav a:hover::after { width: 100%; }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            display: flex; flex-direction: column; justify-content: center;
+            padding: 0 5vw; position: relative; overflow: hidden;
+        }
+
+        .hero-slider { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; }
+        
+        .hero-slide {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover; opacity: 0; transition: opacity 1s ease-in-out; filter: brightness(0.4);
+        }
+        .hero-slide.active { opacity: 1; }
+
+        h1 {
+            font-size: clamp(3rem, 8vw, 8rem); font-weight: 800; line-height: 0.85;
+            text-transform: uppercase; letter-spacing: -2px; mix-blend-mode: difference;
+            position: relative; z-index: 2;
+        }
+
+        /* --- TEXT SECTIONS --- */
+        .section {
+            min-height: 80vh; padding: 10vh 5vw;
+            display: flex; flex-direction: column; justify-content: center;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            position: relative; z-index: 1; /* Ensure z-index */
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 5vw, 4rem); font-family: var(--font-serif);
+            font-style: italic; margin-bottom: 4rem; color: var(--accent-color);
+        }
+
+        .big-text { font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 300; line-height: 1.3; max-width: 800px; }
+
+        /* --- MARQUEE (FIXED OVERLAP) --- */
+        .marquee-wrap {
+            overflow: hidden; white-space: nowrap; padding: 3rem 0;
+            background: var(--accent-color); color: var(--bg-color);
+            transform: rotate(-2deg) scale(1.1);
+            
+            /* FIX: Added margin to prevent overlap with next section */
+            margin: 6rem 0; 
+            
+            border-top: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: relative; z-index: 2;
+        }
+
+        .marquee-content {
+            display: inline-block; animation: marquee 20s linear infinite;
+            font-size: 3rem; font-weight: 800; text-transform: uppercase;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* --- SERVICES GRID --- */
+        .grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem; width: 100%;
+        }
+
+        .service-card {
+            position: relative; overflow: hidden; height: 350px; border-radius: 8px; cursor: pointer;
+        }
+
+        .service-card img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); filter: grayscale(100%);
+        }
+
+        .service-card:hover img { transform: scale(1.1); filter: grayscale(0%); }
+
+        .service-info {
+            position: absolute; bottom: 0; left: 0; padding: 2rem;
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.95), transparent);
+            width: 100%; opacity: 0; transform: translateY(20px); transition: all 0.4s ease;
+        }
+
+        .service-card:hover .service-info { opacity: 1; transform: translateY(0); }
+        .service-info h3 { color: var(--accent-color); font-size: 1.5rem; margin-bottom: 0.5rem; text-transform: uppercase; }
+        .service-info p { color: #fff; font-size: 0.9rem; }
+
+        /* --- VISION & MISSION --- */
+        .vision-mission-container {
+            display: flex; flex-wrap: wrap; gap: 4rem; width: 100%; align-items: center; justify-content: space-between;
+        }
+        .vm-block { flex: 1; min-width: 300px; }
+        .vm-title {
+            font-size: 2.5rem; color: var(--accent-color); margin-bottom: 1rem;
+            text-transform: uppercase; font-weight: 800;
+            border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 1rem; display: inline-block;
+        }
+        .vm-text { font-size: 1.2rem; line-height: 1.6; color: #cbd5e1; }
+
+        /* --- ANIMATIONS --- */
+        .reveal-up { opacity: 0; transform: translateY(100px); transition: all 1s cubic-bezier(0.22, 1, 0.36, 1); }
+        .reveal-left { opacity: 0; transform: translateX(-100px); transition: all 1s cubic-bezier(0.22, 1, 0.36, 1); }
+        .reveal-right { opacity: 0; transform: translateX(100px); transition: all 1s cubic-bezier(0.22, 1, 0.36, 1); }
+        .active-reveal { opacity: 1; transform: translate(0, 0); }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .cursor-dot, .cursor-outline { display: none; } * { cursor: auto; }
+            h1 { font-size: 3.5rem; }
+            .vision-mission-container { flex-direction: column; }
+            .service-card { height: 250px; }
+            .marquee-wrap { transform: rotate(-2deg) scale(1.0); margin: 4rem 0; } /* Don't scale on mobile to prevent overlap */
+        }
+    </style>
 </head>
 <body>
 
-    <!-- HEADER (Fixed on top) -->
-    <header id="main-header">
-        <div class="header-container">
-            <div class="brand-area">
-                <div class="logo-icon">Θ</div>
-                <div class="company-name">Theta Solutions</div>
-            </div>
-            
-            <nav>
-                <ul>
-                    <li><a href="#section-slider" class="active-link">Home</a></li>
-                    <li><a href="services.html" class="nav-link">Services</a></li>
-                    <li><a href="#section-vision" class="nav-link">Vision</a></li>
-                    <li><a href="About-us.html" class="nav-link">About Us</a></li>
-                    <li><a href="contact.html" class="nav-link">Contact</a></li>
-                </ul>
-            </nav>
+    <!-- VISUAL EFFECTS -->
+    <div class="noise-overlay"></div>
+    <div class="cursor-dot" data-cursor-dot></div>
+    <div class="cursor-outline" data-cursor-outline></div>
+
+    <!-- HEADER -->
+    <div class="main-header">
+        <div class="brand-area">
+            <div class="logo-icon">Θ</div>
+            <div class="company-name">THETA SOLUTIONS</div>
+        </div>
+        
+        <nav>
+            <ul>
+                <li><a href="#" style="color: var(--accent-color);">Home</a></li>
+                <li><a href="About-us.html">About Us</a></li>
+                <li><a href="Services.html">Services</a></li>
+                <li><a href="Portfolio.html">Portfolio</a></li>
+                <li><a href="Careershtml">Careers</a></li>
+                <li><a href="contact-us.html">Contact Us</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- HERO -->
+    <header class="hero">
+        <div class="hero-slider">
+            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop" class="hero-slide active" alt="Global Network">
+            <img src="https://images.unsplash.com/photo-1558494949-ef526b0042a0?q=80&w=2070&auto=format&fit=crop" class="hero-slide" alt="Server Room">
+            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop" class="hero-slide" alt="Data Circuit">
+            <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=2070&auto=format&fit=crop" class="hero-slide" alt="Cyber Security">
+            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop" class="hero-slide" alt="Connected Globe">
+        </div>
+
+        <div class="reveal-up">
+            <h1>Digital<br>Innovation<br>Simplified.</h1>
         </div>
     </header>
 
-    <!-- SNAP SCROLL CONTAINER -->
-    <div class="snap-container">
-        
-        <!-- PAGE 1: SLIDER -->
-        <section class="snap-section" id="section-slider">
-            <div class="slider-container" id="home-slider">
-                <div class="slide-overlay">
-                    <h2>Innovating the Future</h2>
-                    <p>Theta Solutions delivers excellence.</p>
-                </div>
-
-                <!-- Info Text (Visible on scroll interaction) -->
-                <div class="slider-info">
-                    <h3>Driving Digital Transformation</h3>
-                    <p>We specialize in AI, Software Development, and IT Deployment.</p>
-                </div>
-
-                <div class="slide active" style="background-image: url('https://picsum.photos/seed/tech1/1920/1080');"></div>
-                <div class="slide" style="background-image: url('https://picsum.photos/seed/tech2/1920/1080');"></div>
-                <div class="slide" style="background-image: url('https://picsum.photos/seed/tech3/1920/1080');"></div>
-                <div class="slide" style="background-image: url('https://picsum.photos/seed/tech4/1920/1080');"></div>
-                <div class="slide" style="background-image: url('https://picsum.photos/seed/tech5/1920/1080');"></div>
-            </div>
-        </section>
-
-        <!-- PAGE 2: SERVICES (Infinite Scroll) -->
-        <section class="snap-section" id="section-services">
-            <div class="marquee-section">
-                <h2>Our Core Expertise</h2>
-                
-                <div class="marquee-container">
-                    <!-- Original Set -->
-                    <a href="it-support.html" class="marquee-item circle-item">
-                        <div class="circle-visual"><img src="https://picsum.photos/seed/support/300/300" alt="IT Support"></div>
-                        <div class="circle-title">IT Support</div>
-                    </a>
-                    <a href="it-deployment.html" class="marquee-item circle-item">
-                        <div class="circle-visual"><img src="https://picsum.photos/seed/server/300/300" alt="IT Deployment"></div>
-                        <div class="circle-title">IT Deployment</div>
-                    </a>
-                    <a href="software-dev.html" class="marquee-item circle-item">
-                        <div class="circle-visual"><img src="https://picsum.photos/seed/code/300/300" alt="Software Development"></div>
-                        <div class="circle-title">Software Dev</div>
-                    </a>
-                    <a href="ai-tools.html" class="marquee-item circle-item">
-                        <div class="circle-visual"><img src="https://picsum.photos/seed/ai/300/300" alt="AI Tools"></div>
-                        <div class="circle-title">AI Tools Dev</div>
-                    </a>
-                    <!-- Duplicate Set for Loop -->
-                    <a href="it-support.html" class="marquee-item circle-item">
-                        <div class="circle-visual"><img src="https://picsum.photos/seed/support/300/300" alt="IT Support"></div>
-                        <div class="circle-title">IT Support</div>
-                    </a>
-                    <a href="it-deployment.html" class="marquee-item circle-item">
-                        <div class="circle-visual"><img src="https://picsum.photos/seed/server/300/300" alt="IT Deployment"></div>
-                        <div class="circle-title">IT Deployment</div>
-                    </a>
-                    <a href="software-dev.html" class="marquee-item circle-item">
-                        <div class="circle-visual"><img src="https://picsum.photos/seed/code/300/300" alt="Software Development"></div>
-                        <div class="circle-title">Software Dev</div>
-                    </a>
-                    <a href="ai-tools.html" class="marquee-item circle-item">
-                        <div class="circle-visual"><img src="https://picsum.photos/seed/ai/300/300" alt="AI Tools"></div>
-                        <div class="circle-title">AI Tools Dev</div>
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <!-- PAGE 3: VISION & MISSION (Zoom In) -->
-        <section class="snap-section reveal-section" id="section-vision">
-            <div class="split-section">
-                <div class="split-half vision-section">
-                    <h2 class="section-title">Our Vision</h2>
-                    <div class="section-content">
-                        <p>At Theta Solutions, we envision a world where technology seamlessly integrates with human potential. We strive to be the leading catalyst for digital transformation.</p>
-                    </div>
-                    <a href="about.html" class="cta-button" style="color: #fff;">Learn More</a>
-                </div>
-
-                <div class="split-half mission-section">
-                    <h2 class="section-title">Our Mission</h2>
-                    <div class="section-content">
-                        <p>Our mission is to provide cutting-edge software solutions that solve complex challenges. We are dedicated to delivering exceptional value to our clients through robust engineering.</p>
-                    </div>
-                    <a href="contact.html" class="cta-button">Get in Touch</a>
-                </div>
-            </div>
-        </section>
-
-    </div>
-    <!-- END SNAP CONTAINER -->
-
-    <!-- FOOTER (Stays at bottom of last section or fixed? Let's put it inside the last section or make it a 4th section) -->
-    <!-- For a "New Page" feel, let's make the Footer a 4th page -->
-    <section class="snap-section" id="section-footer" style="background: #0f172a; display: flex; align-items: center; justify-content: center;">
-        <footer>
-            <p style="color: #fff; font-size: 1.2rem;">&copy; 2023 Theta Solutions. All rights reserved.</p>
-            <div style="margin-top: 1rem;">
-                <a href="#" style="color: #888; margin: 0 10px;">LinkedIn</a>
-                <a href="#" style="color: #888; margin: 0 10px;">Twitter</a>
-                <a href="#" style="color: #888; margin: 0 10px;">Instagram</a>
-            </div>
-        </footer>
+    <!-- PHILOSOPHY TEXT -->
+    <section class="section">
+        <div class="reveal-left">
+            <h2 class="section-title">Philosophy</h2>
+            <p class="big-text">
+                We craft the future.
+                <br><br>
+                Blending art with code to create seamless digital experiences that drive growth and inspire users.
+            </p>
+        </div>
     </section>
 
-    <!-- JAVASCRIPT -->
-    <script src="js/main.js"></script>
-    
-    <script>
-        // 1. HANDLE NAVIGATION HIGHLIGHTS
-        const sections = document.querySelectorAll('.snap-section');
-        const navLinks = document.querySelectorAll('.nav-link');
-        const homeLink = document.querySelector('.active-link');
+    <!-- MARQUEE -->
+    <div class="marquee-wrap">
+        <div class="marquee-content">
+            INNOVATION • STRATEGY • DEVELOPMENT • AI • SERVICES • DEPLOYMENT • NETWORK • SYSTEM • APPLICATIONS • WEB
+            INNOVATION • STRATEGY • DEVELOPMENT • AI • SERVICES • DEPLOYMENT • NETWORK • SYSTEM • APPLICATIONS • WEB
+        </div>
+        <div class="marquee-content">
+            INNOVATION • STRATEGY • DEVELOPMENT • AI • SERVICES • DEPLOYMENT • NETWORK • SYSTEM • APPLICATIONS • WEB
+            INNOVATION • STRATEGY • DEVELOPMENT • AI • SERVICES • DEPLOYMENT • NETWORK • SYSTEM • APPLICATIONS • WEB
+        </div>
+    </div>
+    <!-- REMOVED THE STRAY </header> TAG THAT WAS HERE -->
 
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                // Since we use snap, offset is usually 0 or close to it
-                if (scrollY >= (sectionTop - sectionHeight / 3)) {
-                    current = section.getAttribute('id');
-                }
-            });
+    <!-- OUR SERVICES -->
+    <section class="section">
+        <div class="reveal-up" style="width: 100%;">
+            <h2 class="section-title">Our Services</h2>
+        </div>
+        
+        <div class="grid">
+            <div class="service-card reveal-up">
+                <img src="https://picsum.photos/seed/support/600/800" alt="IT Support">
+                <div class="service-info">
+                    <h3>IT Support</h3>
+                    <p>24/7 Technical Assistance</p>
+                </div>
+            </div>
 
-            // Simple check for snap scroll
-            if(current === 'section-slider') homeLink.classList.add('active-link'); else homeLink.classList.remove('active-link');
+            <div class="service-card reveal-up" style="transition-delay: 0.2s;">
+                <img src="https://picsum.photos/seed/deploy/600/800" alt="IT Deployment">
+                <div class="service-info">
+                    <h3>IT Deployment</h3>
+                    <p>Seamless Infrastructure Setup</p>
+                </div>
+            </div>
+
+            <div class="service-card reveal-up" style="transition-delay: 0.4s;">
+                <img src="https://picsum.photos/seed/code/600/800" alt="Software Development">
+                <div class="service-info">
+                    <h3>Software Development</h3>
+                    <p>Custom Web & Mobile Apps</p>
+                </div>
+            </div>
+
+            <div class="service-card reveal-up" style="transition-delay: 0.6s;">
+                <img src="https://picsum.photos/seed/ai/600/800" alt="AI Tools">
+                <div class="service-info">
+                    <h3>AI Tools Development</h3>
+                    <p>Intelligent Automation Systems</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- VISION & MISSION -->
+    <section class="section" style="background-color: #0b1120;">
+        <div class="vision-mission-container">
             
-            navLinks.forEach(link => {
-                link.classList.remove('active-link');
-                if (link.getAttribute('href').includes(current)) {
-                    link.classList.add('active-link');
-                }
-            });
+            <div class="vm-block reveal-left">
+                <div class="vm-title">Our Vision</div>
+                <p class="vm-text">
+                    At Theta Solutions, we envision a world where technology seamlessly integrates with human potential. We strive to be the leading catalyst for digital transformation.
+                </p>
+            </div>
+
+            <div class="vm-block reveal-right">
+                <div class="vm-title">Our Mission</div>
+                <p class="vm-text">
+                    Our mission is to provide cutting-edge software solutions that solve complex challenges. We are dedicated to delivering exceptional value to our clients through robust engineering.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer style="padding: 3rem; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); color: #666; font-size: 0.9rem;">
+        <p>&copy; 2023 Theta Solutions. All rights reserved.</p>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        const cursorDot = document.querySelector('[data-cursor-dot]');
+        const cursorOutline = document.querySelector('[data-cursor-outline]');
+        window.addEventListener('mousemove', function (e) {
+            const posX = e.clientX; const posY = e.clientY;
+            cursorDot.style.left = `${posX}px`; cursorDot.style.top = `${posY}px`;
+            cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" });
         });
 
-        // 2. HANDLE SLIDER TEXT ANIMATION (Zoom In Effect for Text only)
-        const slider = document.getElementById('home-slider');
-        const infoText = document.querySelector('.slider-info');
-        const mainTitle = document.querySelector('.slide-overlay');
-
-        // We use IntersectionObserver to detect when the slider is in view
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    // Show main title
-                    mainTitle.style.opacity = '1';
-                    mainTitle.style.transform = 'translate(-50%, -50%) scale(1)';
-                    infoText.style.opacity = '0';
-                } else {
-                    // Hide main title, show info text
-                    mainTitle.style.opacity = '0';
-                    mainTitle.style.transform = 'translate(-50%, -40%) scale(0.9)';
-                    infoText.style.opacity = '1';
-                }
+        const revealElements = document.querySelectorAll('.reveal-up, .reveal-left, .reveal-right');
+        const revealOnScroll = () => {
+            const windowHeight = window.innerHeight; const elementVisible = 100;
+            revealElements.forEach((reveal) => {
+                const elementTop = reveal.getBoundingClientRect().top;
+                if (elementTop < windowHeight - elementVisible) reveal.classList.add('active-reveal');
             });
-        }, { threshold: 0.5 });
+        };
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll();
 
-        observer.observe(slider);
-
-        // 3. REVEAL ANIMATIONS (Zoom In for Vision Section)
-        const revealSection = document.querySelector('.reveal-section');
-        
-        const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    
-                    // Animate children
-                    const halves = entry.target.querySelectorAll('.split-half');
-                    halves.forEach((half, index) => {
-                        setTimeout(() => {
-                            half.style.opacity = '1';
-                            half.style.transform = 'translateY(0)';
-                        }, index * 200); // Stagger
-                    });
-                }
-            });
-        }, { threshold: 0.3 });
-
-        revealObserver.observe(revealSection);
+        const slides = document.querySelectorAll('.hero-slide');
+        let currentSlide = 0;
+        const slideInterval = 3000; 
+        function nextSlide() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+        setInterval(nextSlide, slideInterval);
     </script>
-
 </body>
 </html>
