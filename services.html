@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Theta Digital Agency</title>
+    <title>Theta Solutions</title>
     
-    <!-- Import a bold, modern font similar to Humaan -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&family=Playfair+Display:ital,wght@1,400;1,700&display=swap" rel="stylesheet">
@@ -13,15 +13,16 @@
     <style>
         /* --- RESET & VARS --- */
         :root {
-            --bg-color: #050505;
-            --text-color: #e0e0e0;
-            --accent-color: #3b82f6; /* Electric Blue */
+            --bg-color: #0f172a; /* Bluish Dark Theme */
+            --bg-secondary: #1e293b;
+            --text-color: #e2e8f0;
+            --accent-color: #38bdf8; /* Bright Blue */
             --cursor-size: 20px;
             --font-main: 'Outfit', sans-serif;
             --font-serif: 'Playfair Display', serif;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; /* Hide default cursor */ }
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
 
         body {
             background-color: var(--bg-color);
@@ -31,7 +32,7 @@
             line-height: 1.1;
         }
 
-        /* --- GRAIN OVERLAY (The Humaan Texture) --- */
+        /* --- GRAIN OVERLAY --- */
         .noise-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -42,64 +43,49 @@
         }
 
         /* --- CUSTOM CURSOR --- */
-        .cursor-dot,
-        .cursor-outline {
-            position: fixed;
-            top: 0; left: 0;
+        .cursor-dot, .cursor-outline {
+            position: fixed; top: 0; left: 0;
             transform: translate(-50%, -50%);
-            border-radius: 50%;
-            z-index: 10000;
-            pointer-events: none;
+            border-radius: 50%; z-index: 10000; pointer-events: none;
+        }
+        .cursor-dot { width: 8px; height: 8px; background-color: var(--text-color); }
+        .cursor-outline { width: 40px; height: 40px; border: 1px solid var(--text-color); transition: width 0.2s, height 0.2s, background-color 0.2s; }
+        a:hover ~ .cursor-outline, button:hover ~ .cursor-outline {
+            width: 60px; height: 60px; background-color: rgba(255, 255, 255, 0.1); border-color: transparent;
         }
 
-        .cursor-dot {
-            width: 8px; height: 8px;
-            background-color: var(--text-color);
-        }
-
-        .cursor-outline {
-            width: 40px; height: 40px;
-            border: 1px solid var(--text-color);
-            transition: width 0.2s, height 0.2s, background-color 0.2s;
-        }
-
-        body:hover .cursor-outline {
-            opacity: 1;
-        }
-
-        /* Hover effect for links */
-        a:hover ~ .cursor-outline,
-        button:hover ~ .cursor-outline {
-            width: 60px;
-            height: 60px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-color: transparent;
-        }
-
-        /* --- NAVIGATION --- */
-        nav {
-            position: fixed;
-            top: 0; left: 0; width: 100%;
-            padding: 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* --- HEADER (Restored Index Page Layout) --- */
+        header {
+            position: fixed; top: 0; left: 0; width: 100%;
+            padding: 1rem 2rem;
+            display: flex; justify-content: space-between; align-items: center;
             z-index: 100;
-            mix-blend-mode: difference; /* Cool effect over images */
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        .logo { font-weight: 800; text-transform: uppercase; font-size: 1.2rem; letter-spacing: 2px; }
-        
-        .menu-btn {
-            background: none; border: none;
-            color: var(--text-color);
-            font-family: var(--font-main);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 0.9rem;
+        .brand-area {
+            display: flex; align-items: center; gap: 10px;
         }
 
-        /* --- HERO SECTION --- */
+        .logo-icon {
+            font-size: 1.8rem; color: var(--accent-color); font-weight: bold;
+        }
+
+        .company-name {
+            font-size: 1.2rem; font-weight: 700; color: white; letter-spacing: 1px;
+        }
+
+        nav ul { display: flex; gap: 25px; list-style: none; }
+        nav a {
+            font-size: 0.9rem; font-weight: 500; color: var(--text-color);
+            text-transform: uppercase; letter-spacing: 1px; text-decoration: none;
+            transition: color 0.3s;
+        }
+        nav a:hover { color: var(--accent-color); }
+
+        /* --- HERO SECTION (SLIDESHOW) --- */
         .hero {
             height: 100vh;
             display: flex;
@@ -107,32 +93,35 @@
             justify-content: center;
             padding: 0 5vw;
             position: relative;
+            overflow: hidden;
         }
+
+        /* Slideshow Background */
+        .hero-slider {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+        }
+        
+        .hero-slide {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            filter: brightness(0.6);
+        }
+        .hero-slide.active { opacity: 1; }
 
         h1 {
-            font-size: clamp(3rem, 8vw, 9rem); /* Responsive giant text */
-            font-weight: 800;
-            line-height: 0.85;
-            text-transform: uppercase;
-            letter-spacing: -2px;
+            font-size: clamp(3rem, 8vw, 8rem);
+            font-weight: 800; line-height: 0.85;
+            text-transform: uppercase; letter-spacing: -2px;
             mix-blend-mode: difference;
-            position: relative;
-            z-index: 2;
+            position: relative; z-index: 2;
         }
 
-        .hero-bg-img {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover;
-            opacity: 0.6;
-            z-index: 0;
-            transform: scale(1.1); /* For parallax */
-            transition: transform 0.1s linear;
-        }
-
-        /* --- SCROLL SECTIONS --- */
+        /* --- TEXT SECTIONS --- */
         .section {
-            min-height: 100vh;
+            min-height: 80vh; /* Slightly shorter than full screen for text */
             padding: 10vh 5vw;
             display: flex;
             flex-direction: column;
@@ -148,87 +137,26 @@
             color: var(--accent-color);
         }
 
-        /* --- GRID LAYOUT --- */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            width: 100%;
-        }
-
-        .card {
-            position: relative;
-            overflow: hidden;
-            height: 400px;
-        }
-
-        .card img {
-            width: 100%; height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .card:hover img {
-            transform: scale(1.1);
-        }
-
-        .card-info {
-            position: absolute;
-            bottom: 0; left: 0;
-            padding: 2rem;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-            width: 100%;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.4s ease;
-        }
-
-        .card:hover .card-info {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* --- ANIMATIONS (REVEAL) --- */
-        .reveal-up {
-            opacity: 0;
-            transform: translateY(100px);
-            transition: all 1s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .reveal-left {
-            opacity: 0;
-            transform: translateX(-100px);
-            transition: all 1s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .reveal-right {
-            opacity: 0;
-            transform: translateX(100px);
-            transition: all 1s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .active-reveal {
-            opacity: 1;
-            transform: translate(0, 0);
+        .big-text {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 300;
+            line-height: 1.3;
+            max-width: 800px;
         }
 
         /* --- MARQUEE --- */
         .marquee-wrap {
-            overflow: hidden;
-            white-space: nowrap;
-            padding: 4rem 0;
-            background: var(--accent-color);
-            color: var(--bg-color);
-            transform: rotate(-2deg) scale(1.1); /* Humaan style skew */
-            margin: 5rem 0;
+            overflow: hidden; white-space: nowrap; padding: 3rem 0;
+            background: var(--accent-color); color: var(--bg-color);
+            transform: rotate(-2deg) scale(1.1);
+            margin: 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
         .marquee-content {
-            display: inline-block;
-            animation: marquee 20s linear infinite;
-            font-size: 4rem;
-            font-weight: 800;
-            text-transform: uppercase;
+            display: inline-block; animation: marquee 20s linear infinite;
+            font-size: 3rem; font-weight: 800; text-transform: uppercase;
         }
 
         @keyframes marquee {
@@ -236,21 +164,92 @@
             100% { transform: translateX(-50%); }
         }
 
-        /* --- FOOTER --- */
-        footer {
-            padding: 5rem;
-            text-align: center;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            color: #666;
+        /* --- SERVICES GRID (4 Blocks) --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem; width: 100%;
         }
+
+        .service-card {
+            position: relative;
+            overflow: hidden;
+            height: 350px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .service-card img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+            filter: grayscale(100%);
+        }
+
+        .service-card:hover img {
+            transform: scale(1.1);
+            filter: grayscale(0%);
+        }
+
+        .service-info {
+            position: absolute; bottom: 0; left: 0;
+            padding: 2rem;
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.95), transparent);
+            width: 100%;
+            transform: translateY(20px);
+            transition: transform 0.4s ease;
+        }
+
+        .service-card:hover .service-info { transform: translateY(0); }
+        .service-info h3 { color: var(--accent-color); font-size: 1.5rem; margin-bottom: 0.5rem; text-transform: uppercase; }
+        .service-info p { color: #fff; font-size: 0.9rem; }
+
+        /* --- VISION & MISSION SPLIT --- */
+        .vision-mission-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4rem;
+            width: 100%;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .vm-block {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .vm-title {
+            font-size: 2.5rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            padding-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .vm-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #cbd5e1;
+        }
+
+        /* --- ANIMATIONS (REVEAL) --- */
+        .reveal-up { opacity: 0; transform: translateY(100px); transition: all 1s cubic-bezier(0.22, 1, 0.36, 1); }
+        .reveal-left { opacity: 0; transform: translateX(-100px); transition: all 1s cubic-bezier(0.22, 1, 0.36, 1); }
+        .reveal-right { opacity: 0; transform: translateX(100px); transition: all 1s cubic-bezier(0.22, 1, 0.36, 1); }
+
+        .active-reveal { opacity: 1; transform: translate(0, 0); }
 
         /* Mobile Adjustments */
         @media (max-width: 768px) {
-            h1 { font-size: 3.5rem; }
-            .cursor-dot, .cursor-outline { display: none; } /* Disable custom cursor on touch */
+            .cursor-dot, .cursor-outline { display: none; }
             * { cursor: auto; }
+            h1 { font-size: 3.5rem; }
+            nav { display: none; } /* Hide nav on mobile for this demo */
+            .vision-mission-container { flex-direction: column; }
         }
     </style>
 </head>
@@ -261,133 +260,173 @@
     <div class="cursor-dot" data-cursor-dot></div>
     <div class="cursor-outline" data-cursor-outline></div>
 
-    <!-- NAV -->
-    <nav>
-        <div class="logo">Theta Digital</div>
-        <button class="menu-btn">Menu +</button>
-    </nav>
+    <!-- HEADER (As per Index Page) -->
+    <header>
+        <div class="brand-area">
+            <div class="logo-icon">Θ</div>
+            <div class="company-name">THETA SOLUTIONS</div>
+        </div>
+        
+        <nav>
+            <ul>
+                <li><a href="#" style="color: var(--accent-color);">Home</a></li>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Portfolio</a></li>
+                <li><a href="#">Careers</a></li>
+                <li><a href="#">Contact Us</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <!-- HERO -->
+    <!-- HERO (Slideshow) -->
     <header class="hero">
-        <img src="https://picsum.photos/seed/darktech/1920/1080" class="hero-bg-img" alt="Hero BG">
+        <div class="hero-slider">
+            <!-- 5 Images cycling -->
+            <img src="https://picsum.photos/seed/darktech/1920/1080" class="hero-slide">
+            <img src="https://picsum.photos/seed/tech2/1920/1080" class="hero-slide">
+            <img src="https://picsum.photos/seed/tech3/1920/1080" class="hero-slide">
+            <img src="https://picsum.photos/seed/tech4/1920/1080" class="hero-slide">
+            <img src="https://picsum.photos/seed/tech5/1920/1080" class="hero-slide">
+        </div>
+
         <div class="reveal-up">
-            <h1>Digital<br>Experiences<br>That Matter.</h1>
+            <h1>Digital<br>Innovation<br>Simplified.</h1>
         </div>
     </header>
 
-    <!-- ABOUT / PHILOSOPHY -->
+    <!-- PHILOSOPHY TEXT -->
     <section class="section">
         <div class="reveal-left">
-            <h2 class="section-title">We craft the future.</h2>
-            <p style="font-size: 1.5rem; max-width: 800px; line-height: 1.6;">
-                Inspired by the visionaries of tomorrow, we blend technology and art to create digital products that resonate. We don't just build websites; we build legacies.
+            <h2 class="section-title">Philosophy</h2>
+            <p class="big-text">
+                We craft the future.
+                <br><br>
+                Blending art with code to create seamless digital experiences that drive growth and inspire users.
             </p>
         </div>
     </section>
 
-    <!-- MARQUEE BANNER -->
+    <!-- MARQUEE -->
     <div class="marquee-wrap">
         <div class="marquee-content">
-            STRATEGY • DESIGN • DEVELOPMENT • BRANDING • STRATEGY • DESIGN • DEVELOPMENT • BRANDING • 
-            STRATEGY • DESIGN • DEVELOPMENT • BRANDING • STRATEGY • DESIGN • DEVELOPMENT • BRANDING • 
+            INNOVATION • STRATEGY • DEVELOPMENT • AI • SERVICES • DEPLOYMENT • NETWORK • SYSTEM • APPLICATIONS • WEB
+            INNOVATION • STRATEGY • DEVELOPMENT • AI • SERVICES • DEPLOYMENT • NETWORK • SYSTEM • APPLICATIONS • WEB
+
         </div>
-        <!-- Duplicate for seamless loop -->
         <div class="marquee-content">
-            STRATEGY • DESIGN • DEVELOPMENT • BRANDING • STRATEGY • DESIGN • DEVELOPMENT • BRANDING • 
-            STRATEGY • DESIGN • DEVELOPMENT • BRANDING • STRATEGY • DESIGN • DEVELOPMENT • BRANDING • 
+            INNOVATION • STRATEGY • DEVELOPMENT • AI • SERVICES • DEPLOYMENT • NETWORK • SYSTEM • APPLICATIONS • WEB
+            INNOVATION • STRATEGY • DEVELOPMENT • AI • SERVICES • DEPLOYMENT • NETWORK • SYSTEM • APPLICATIONS • WEB
         </div>
     </div>
 
-    <!-- WORK / PORTFOLIO -->
+    <!-- OUR SERVICES (4 Blocks) -->
     <section class="section">
         <div class="reveal-up" style="width: 100%;">
-            <h2 class="section-title" style="text-align: right;">Selected Work</h2>
+            <h2 class="section-title">Our Services</h2>
         </div>
         
         <div class="grid">
-            <div class="card reveal-up">
-                <img src="https://picsum.photos/seed/arch/600/800" alt="Project 1">
-                <div class="card-info">
-                    <h3>Neon Architecture</h3>
-                    <p>Web Design</p>
+            <!-- 1. IT Support -->
+            <div class="service-card reveal-up">
+                <img src="https://picsum.photos/seed/support/600/800" alt="IT Support">
+                <div class="service-info">
+                    <h3>IT Support</h3>
+                    <p>24/7 Technical Assistance</p>
                 </div>
             </div>
-            <div class="card reveal-up" style="transition-delay: 0.2s;">
-                <img src="https://picsum.photos/seed/fashion/600/800" alt="Project 2">
-                <div class="card-info">
-                    <h3>Vogue Future</h3>
-                    <p>E-Commerce</p>
+
+            <!-- 2. IT Deployment -->
+            <div class="service-card reveal-up" style="transition-delay: 0.1s;">
+                <img src="https://picsum.photos/seed/deploy/600/800" alt="IT Deployment">
+                <div class="service-info">
+                    <h3>IT Deployment</h3>
+                    <p>Seamless Infrastructure Setup</p>
                 </div>
             </div>
-            <div class="card reveal-up" style="transition-delay: 0.4s;">
-                <img src="https://picsum.photos/seed/car/600/800" alt="Project 3">
-                <div class="card-info">
-                    <h3>Auto Motion</h3>
-                    <p>3D Experience</p>
+
+            <!-- 3. Software Development -->
+            <div class="service-card reveal-up" style="transition-delay: 0.2s;">
+                <img src="https://picsum.photos/seed/code/600/800" alt="Software Development">
+                <div class="service-info">
+                    <h3>Software Development</h3>
+                    <p>Custom Web & Mobile Apps</p>
+                </div>
+            </div>
+
+            <!-- 4. AI Tools Development -->
+            <div class="service-card reveal-up" style="transition-delay: 0.3s;">
+                <img src="https://picsum.photos/seed/ai/600/800" alt="AI Tools">
+                <div class="service-info">
+                    <h3>AI Tools Development</h3>
+                    <p>Intelligent Automation Systems</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- CONTACT -->
-    <section class="section">
-        <div class="reveal-left">
-            <h1 style="font-size: 5rem; margin-bottom: 2rem;">Let's Talk.</h1>
-            <a href="#" style="font-size: 2rem; border-bottom: 2px solid var(--accent-color); padding-bottom: 5px;">hello@theta.com</a>
+    <!-- VISION & MISSION (Split Animation) -->
+    <section class="section" style="background-color: #0b1120;">
+        <div class="vision-mission-container">
+            
+            <!-- Vision (Left) -->
+            <div class="vm-block reveal-left">
+                <div class="vm-title">Our Vision</div>
+                <p class="vm-text">
+                    At Theta Solutions, we envision a world where technology seamlessly integrates with human potential. We strive to be the leading catalyst for digital transformation, empowering businesses to reach new heights.
+                </p>
+            </div>
+
+            <!-- Mission (Right) -->
+            <div class="vm-block reveal-right">
+                <div class="vm-title">Our Mission</div>
+                <p class="vm-text">
+                    Our mission is to provide cutting-edge software solutions that solve complex challenges. We are dedicated to delivering exceptional value to our clients through robust engineering and user-centric design.
+                </p>
+            </div>
+
         </div>
     </section>
 
-    <footer>
-        <p>&copy; 2023 Theta Digital Agency. Inspired by Humaan.</p>
+    <!-- FOOTER -->
+    <footer style="padding: 3rem; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); color: #666; font-size: 0.9rem;">
+        <p>&copy; 2023 Theta Solutions. All rights reserved.</p>
     </footer>
 
     <!-- JAVASCRIPT -->
     <script>
-        // 1. CUSTOM CURSOR LOGIC
+        // 1. CUSTOM CURSOR
         const cursorDot = document.querySelector('[data-cursor-dot]');
         const cursorOutline = document.querySelector('[data-cursor-outline]');
-
         window.addEventListener('mousemove', function (e) {
-            const posX = e.clientX;
-            const posY = e.clientY;
-
-            // Dot follows instantly
-            cursorDot.style.left = `${posX}px`;
-            cursorDot.style.top = `${posY}px`;
-
-            // Outline follows with slight delay (animation in CSS handles smoothness)
-            cursorOutline.animate({
-                left: `${posX}px`,
-                top: `${posY}px`
-            }, { duration: 500, fill: "forwards" });
+            const posX = e.clientX; const posY = e.clientY;
+            cursorDot.style.left = `${posX}px`; cursorDot.style.top = `${posY}px`;
+            cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" });
         });
 
-        // 2. SCROLL REVEAL ANIMATIONS
+        // 2. SCROLL REVEAL
         const revealElements = document.querySelectorAll('.reveal-up, .reveal-left, .reveal-right');
-
         const revealOnScroll = () => {
-            const windowHeight = window.innerHeight;
-            const elementVisible = 100;
-
+            const windowHeight = window.innerHeight; const elementVisible = 100;
             revealElements.forEach((reveal) => {
                 const elementTop = reveal.getBoundingClientRect().top;
-                if (elementTop < windowHeight - elementVisible) {
-                    reveal.classList.add('active-reveal');
-                }
+                if (elementTop < windowHeight - elementVisible) reveal.classList.add('active-reveal');
             });
         };
-
         window.addEventListener('scroll', revealOnScroll);
-        revealOnScroll(); // Trigger once on load
+        revealOnScroll();
 
-        // 3. PARALLAX EFFECT
-        const heroBg = document.querySelector('.hero-bg-img');
-        window.addEventListener('scroll', () => {
-            const scrollY = window.scrollY;
-            if(scrollY < window.innerHeight) {
-                heroBg.style.transform = `scale(1.1) translateY(${scrollY * 0.5}px)`;
-            }
-        });
+        // 3. HERO SLIDESHOW
+        const slides = document.querySelectorAll('.hero-slide');
+        let currentSlide = 0;
+        const slideInterval = 3000; // Change every 3 seconds
+
+        function nextSlide() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+        setInterval(nextSlide, slideInterval);
 
     </script>
 </body>
