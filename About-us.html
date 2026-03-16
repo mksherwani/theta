@@ -3,219 +3,432 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Theta Solutions - About Us</title>
+    <title>Theta Solutions - Team</title>
     
-    <link rel="stylesheet" href="css/style.css">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&family=Playfair+Display:ital,wght@1,400;1,700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- RESET & VARS --- */
+        :root {
+            --bg-color: #0f172a;
+            --bg-card: #1e293b;
+            --text-color: #e2e8f0;
+            --accent-color: #38bdf8;
+            --font-main: 'Outfit', sans-serif;
+            --font-serif: 'Playfair Display', serif;
+        }
+
+        html, body {
+            margin: 0; padding: 0; box-sizing: border-box;
+            position: relative; width: 100%;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            line-height: 1.1;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
+
+        /* --- GRAIN OVERLAY --- */
+        .noise-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9998; opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* --- CUSTOM CURSOR --- */
+        .cursor-dot, .cursor-outline {
+            position: fixed; top: 0; left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%; z-index: 10000; pointer-events: none;
+        }
+        .cursor-dot { width: 8px; height: 8px; background-color: var(--text-color); }
+        .cursor-outline { width: 40px; height: 40px; border: 1px solid var(--text-color); transition: width 0.2s, height 0.2s, background-color 0.2s; }
+        .team-card:hover ~ .cursor-outline, .core-card:hover ~ .cursor-outline {
+            width: 60px; height: 60px; background-color: rgba(255, 255, 255, 0.1); border-color: transparent;
+        }
+
+        /* --- HEADER --- */
+        .main-header {
+            position: fixed; top: 0; left: 0; width: 100%;
+            padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center;
+            z-index: 9999; background-color: #0f172a;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        .brand-area { display: flex; align-items: center; gap: 12px; z-index: 100000; }
+        .logo-icon { font-size: 2.2rem; color: var(--accent-color); font-weight: bold; line-height: 1; }
+        .company-name { font-size: 1.4rem; font-weight: 800; color: white; letter-spacing: 1px; text-transform: uppercase; }
+        nav { z-index: 100000; }
+        nav ul { display: flex; gap: 25px; list-style: none; }
+        nav a { font-size: 0.95rem; font-weight: 600; color: #fff; text-transform: uppercase; text-decoration: none; transition: color 0.3s; }
+        nav a:hover { color: var(--accent-color); }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            padding: 0 5vw;
+            background: radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 70%);
+        }
+
+        h1 {
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 800; line-height: 0.9;
+            text-transform: uppercase; letter-spacing: -1px;
+            color: white; margin-bottom: 1rem;
+        }
+
+        .sub-heading {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-size: clamp(1.2rem, 2vw, 2rem);
+            color: var(--accent-color);
+            max-width: 600px;
+        }
+
+        /* --- SECTION --- */
+        .section {
+            padding: 8vh 5vw;
+            position: relative;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-family: var(--font-serif);
+            font-style: italic;
+            margin-bottom: 4rem;
+            color: var(--accent-color);
+        }
+
+        /* --- TEAM GRID --- */
+        .team-grid {
+            display: flex; justify-content: center; gap: 2.5rem;
+            flex-wrap: wrap; position: relative; z-index: 10;
+        }
+
+        .team-card {
+            position: relative; width: 240px; background: var(--bg-card);
+            border-radius: 12px; overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .team-card img {
+            width: 100%; height: 300px; object-fit: cover;
+            filter: grayscale(100%); transition: all 0.5s ease; display: block;
+        }
+
+        .team-name-box {
+            padding: 1.5rem; background: var(--bg-card);
+            position: relative; z-index: 2; border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .team-name {
+            font-size: 1.1rem; font-weight: 800; color: white;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        .team-role {
+            font-size: 0.85rem; color: var(--accent-color);
+            font-weight: 600; margin-top: 5px;
+        }
+
+        /* Hidden Details */
+        .profile-details {
+            max-height: 0; overflow: hidden; opacity: 0;
+            background: #253346; padding: 0 2rem;
+            text-align: left; transition: all 0.5s ease;
+            width: 0; display: inline-block; vertical-align: top;
+        }
+
+        /* Hover */
+        .team-card:hover { transform: translateY(-15px) scale(1.05); box-shadow: 0 20px 40px rgba(56, 189, 248, 0.2); }
+        .team-card:hover img { filter: grayscale(0%); transform: scale(1.1); }
+
+        /* --- ACTIVE STATE (SPLIT LAYOUT) --- */
+        .founders-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(15px); z-index: 900;
+            opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .founders-overlay.active { opacity: 1; pointer-events: auto; }
+
+        .team-card.active {
+            position: relative; width: 800px; max-width: 90vw; height: auto;
+            z-index: 1000; transform: scale(1) !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            cursor: default; pointer-events: auto; opacity: 1; animation: none;
+            display: flex; flex-direction: row; align-items: flex-start; overflow: visible;
+            background: var(--bg-card);
+        }
+
+        .team-card.active .team-name-box { display: none; }
+
+        .team-card.active img {
+            width: 45%; height: 450px; object-fit: cover;
+            filter: grayscale(0%); transform: none !important;
+            border-radius: 12px 0 0 12px; margin: 0;
+        }
+
+        .team-card.active .profile-details {
+            max-height: 600px; opacity: 1; width: 55%;
+            padding: 3rem 2rem; height: 450px; overflow-y: auto;
+            border-radius: 0 12px 12px 0; background: var(--bg-card); margin: 0;
+            color: #cbd5e1;
+        }
+
+        /* Close Button */
+        .close-btn {
+            position: absolute; top: -20px; right: -20px;
+            background: var(--accent-color); border: none; font-size: 1.5rem;
+            cursor: pointer; width: 45px; height: 45px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 1002;
+            transition: transform 0.3s; color: #0f172a;
+        }
+        .close-btn:hover { transform: rotate(90deg); background: white; }
+
+        /* --- CORE MEMBERS --- */
+        .core-section { display: flex; justify-content: center; gap: 5rem; padding: 5rem 0; position: relative; }
+        .core-card { animation: float 6s ease-in-out infinite; }
+        .core-card:nth-child(2) { animation-delay: 3s; }
+        .core-card img {
+            width: 220px; height: 220px; border-radius: 50%; object-fit: cover;
+            border: 4px solid var(--accent-color); box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            transition: all 0.4s ease;
+        }
+        .core-card:hover img { transform: scale(1.15); border-color: white; }
+        .core-name { margin-top: 1.5rem; font-size: 1.3rem; font-weight: 700; color: white; text-align: center; }
+        .core-role { color: var(--accent-color); font-weight: 600; font-size: 0.95rem; margin-top: 5px; text-align: center; }
+
+        /* --- ANIMATIONS --- */
+        .reveal-up { opacity: 0; transform: translateY(50px); transition: all 1s cubic-bezier(0.22, 1, 0.36, 1); }
+        .reveal-left { opacity: 0; transform: translateX(-50px); transition: all 1s cubic-bezier(0.22, 1, 0.36, 1); }
+        .reveal-right { opacity: 0; transform: translateX(50px); transition: all 1s cubic-bezier(0.22, 1, 0.36, 1); }
+        .active-reveal { opacity: 1; transform: translate(0, 0); }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @media (max-width: 768px) {
+            .cursor-dot, .cursor-outline { display: none; } * { cursor: auto; }
+            .team-card.active { flex-direction: column; width: 90%; }
+            .team-card.active img { width: 100%; height: 300px; border-radius: 12px 12px 0 0; }
+            .team-card.active .profile-details { width: 100%; height: auto; border-radius: 0 0 12px 12px; }
+            .core-section { flex-direction: column; align-items: center; }
+        }
+    </style>
 </head>
 <body>
 
+    <!-- VISUAL EFFECTS -->
+    <div class="noise-overlay"></div>
+    <div class="cursor-dot" data-cursor-dot></div>
+    <div class="cursor-outline" data-cursor-outline></div>
+
     <!-- HEADER -->
-    <header>
-        <div class="header-container">
-            <div class="brand-area">
-                <div class="logo-icon">Θ</div>
-                <div class="company-name">Theta Solutions</div>
-            </div>
-            
-            <nav>
-                <ul>
-                    <li><a href="index.html">Home</a></li>
-                    <li><a href="about-us.html" style="color: var(--accent-color);">About Us</a></li>
-                    <li><a href="services.html">Services</a></li>
-                    <li><a href="portfolio.html">Portfolio</a></li>
-                    <li><a href="careers.html">Careers</a></li>
-                    <li><a href="contact.html">Contact Us</a></li>
-                </ul>
-            </nav>
+    <div class="main-header">
+        <div class="brand-area">
+            <div class="logo-icon">Θ</div>
+            <div class="company-name">THETA SOLUTIONS</div>
         </div>
-    </header>
-
-    <main>
         
-        <!-- 1. FOUNDERS SECTION -->
-        <section class="about-hero">
-            <h2>The Founders</h2>
-            <p>Visionaries driving the next generation of technology.</p>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="team-agency.html" style="color: var(--accent-color);">Team</a></li>
+                <li><a href="index.html#services">Services</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="reveal-up">
+            <h1>MEET THE TEAM</h1>
+            <p class="sub-heading">The mind behind the Theta Solutions</p>
+        </div>
+    </section>
+
+    <!-- FOUNDERS SECTION -->
+    <section class="section">
+        <div class="reveal-up">
+            <h2 class="section-title">Founders</h2>
+        </div>
+        
+        <div class="team-grid">
             
-            <div class="team-grid">
-                
-                <!-- Founder 1 -->
-                <div class="team-card" onclick="activateCard(this)">
-                    
-                    <!-- 1. The Image -->
-                    <img src="https://picsum.photos/seed/founder1/600/800" alt="Founder 1">
-                    
-                    <!-- 2. Small Name Box (Visible when NOT clicked) -->
-                    <div class="team-name-box">
-                        <div class="team-name">Alice Johnson</div>
-                        <div class="team-role">CEO & Co-Founder</div>
-                    </div>
-                    
-                    <!-- 3. Profile Details (Visible WHEN CLICKED - Right Side) -->
-                    <div class="profile-details">
-                        <!-- Name and Role appear HERE in the split view -->
-                        <h3 style="font-size: 2rem; color: var(--primary-color); margin-bottom: 5px;">Alice Johnson</h3>
-                        <span class="role-badge">CEO & Co-Founder</span>
-                        
-                        <p style="margin-top: 20px; line-height: 1.8; color: #444;">
-                            Alice has over 15 years of experience in strategic tech development. She leads the vision and global expansion of Theta Solutions, focusing on sustainable growth and innovation. Her expertise lies in scaling startups into global enterprises.
-                        </p>
-                        
-                        <!-- Optional: Add more details -->
-                        <p style="margin-top: 15px; line-height: 1.8; color: #444;">
-                            <strong>Key Skills:</strong> Strategic Planning, Global Operations, Product Vision.
-                        </p>
-                    </div>
-                    
+            <!-- Founder 1 -->
+            <div class="team-card reveal-left" onclick="activateCard(this)">
+                <img src="https://picsum.photos/seed/founder1/400/500" alt="Founder 1">
+                <div class="team-name-box">
+                    <div class="team-name">Alice Johnson</div>
+                    <div class="team-role">CEO & Co-Founder</div>
                 </div>
-
-                <!-- Founder 2 -->
-                <div class="team-card" onclick="activateCard(this)">
-                    <img src="https://picsum.photos/seed/founder2/400/500" alt="Founder 2">
-                    <div class="team-name-box">
-                        <div class="team-name">Mark Smith</div>
-                        <div class="team-role">CTO & Co-Founder</div>
-                    </div>
-                    <div class="profile-details">
-                        <h3>Mark Smith</h3>
-                        <span class="role-badge">CTO & Co-Founder</span>
-                        <p>An expert in AI and machine learning, Mark architects the core systems that power our client solutions. He believes in code that thinks.</p>
-                    </div>
+                <div class="profile-details">
+                    <h3 style="color:white; font-size:1.8rem; margin-bottom:0.5rem;">Alice Johnson</h3>
+                    <span style="background:var(--accent-color); color:#0f172a; padding:2px 10px; border-radius:10px; font-size:0.8rem; font-weight:bold;">CEO & Co-Founder</span>
+                    <p style="margin-top:1.5rem; line-height:1.6;">Alice leads Theta Solutions with over 15 years of strategic tech development. Her vision drives our global expansion and sustainable growth.</p>
                 </div>
-
-                <!-- Founder 3 -->
-                <div class="team-card" onclick="activateCard(this)">
-                    <img src="https://picsum.photos/seed/founder3/400/500" alt="Founder 3">
-                    <div class="team-name-box">
-                        <div class="team-name">Sara Lee</div>
-                        <div class="team-role">Head of Product</div>
-                    </div>
-                    <div class="profile-details">
-                        <h3>Sara Lee</h3>
-                        <span class="role-badge">Head of Product</span>
-                        <p>Sara ensures that every software deployment meets the highest standards of user experience. Her attention to detail is legendary.</p>
-                    </div>
-                </div>
-
-                <!-- Founder 4 -->
-                <div class="team-card" onclick="activateCard(this)">
-                    <img src="https://picsum.photos/seed/founder4/400/500" alt="Founder 4">
-                    <div class="team-name-box">
-                        <div class="team-name">David Chen</div>
-                        <div class="team-role">VP of Engineering</div>
-                    </div>
-                    <div class="profile-details">
-                        <h3>David Chen</h3>
-                        <span class="role-badge">VP of Engineering</span>
-                        <p>David leads our engineering teams, fostering a culture of code excellence and rapid innovation across all departments.</p>
-                    </div>
-                </div>
-
-                <!-- Founder 5 -->
-                <div class="team-card" onclick="activateCard(this)">
-                    <img src="https://picsum.photos/seed/founder5/400/500" alt="Founder 5">
-                    <div class="team-name-box">
-                        <div class="team-name">Emily Davis</div>
-                        <div class="team-role">Chief Strategy Officer</div>
-                    </div>
-                    <div class="profile-details">
-                        <h3>Emily Davis</h3>
-                        <span class="role-badge">Chief Strategy Officer</span>
-                        <p>Emily identifies new market opportunities and steers the company's long-term growth strategies with precision.</p>
-                    </div>
-                </div>
-
             </div>
-        </section>
 
-        <!-- The Overlay (Backdrop) -->
-        <div class="founders-overlay" id="overlay"></div>
-
-        <!-- 2. CORE MEMBERS SECTION -->
-        <section class="core-section">
-            <h2>Core Activity Team</h2>
-            
-            <div class="core-grid">
-                
-                <!-- Core 1 -->
-                <div class="core-card">
-                    <img src="https://picsum.photos/seed/core1/400/400" alt="Core Member">
-                    <div class="core-name">James Wilson</div>
-                    <div class="core-role">Lead Developer</div>
+            <!-- Founder 2 -->
+            <div class="team-card reveal-up" onclick="activateCard(this)">
+                <img src="https://picsum.photos/seed/founder2/400/500" alt="Founder 2">
+                <div class="team-name-box">
+                    <div class="team-name">Mark Smith</div>
+                    <div class="team-role">CTO & Co-Founder</div>
                 </div>
-
-                <!-- Core 2 -->
-                <div class="core-card">
-                    <img src="https://picsum.photos/seed/core2/400/400" alt="Core Member">
-                    <div class="core-name">Linda Brown</div>
-                    <div class="core-role">Operations Manager</div>
+                <div class="profile-details">
+                    <h3 style="color:white; font-size:1.8rem; margin-bottom:0.5rem;">Mark Smith</h3>
+                    <span style="background:var(--accent-color); color:#0f172a; padding:2px 10px; border-radius:10px; font-size:0.8rem; font-weight:bold;">CTO & Co-Founder</span>
+                    <p style="margin-top:1.5rem; line-height:1.6;">An expert in AI and machine learning, Mark architects the core systems that power our client solutions.</p>
                 </div>
-
             </div>
-        </section>
 
-    </main>
+            <!-- Founder 3 -->
+            <div class="team-card reveal-up" onclick="activateCard(this)">
+                <img src="https://picsum.photos/seed/founder3/400/500" alt="Founder 3">
+                <div class="team-name-box">
+                    <div class="team-name">Sara Lee</div>
+                    <div class="team-role">Head of Product</div>
+                </div>
+                <div class="profile-details">
+                    <h3 style="color:white; font-size:1.8rem; margin-bottom:0.5rem;">Sara Lee</h3>
+                    <span style="background:var(--accent-color); color:#0f172a; padding:2px 10px; border-radius:10px; font-size:0.8rem; font-weight:bold;">Head of Product</span>
+                    <p style="margin-top:1.5rem; line-height:1.6;">Sara ensures that every software deployment meets the highest standards of user experience.</p>
+                </div>
+            </div>
+
+            <!-- Founder 4 -->
+            <div class="team-card reveal-up" onclick="activateCard(this)">
+                <img src="https://picsum.photos/seed/founder4/400/500" alt="Founder 4">
+                <div class="team-name-box">
+                    <div class="team-name">David Chen</div>
+                    <div class="team-role">VP of Engineering</div>
+                </div>
+                <div class="profile-details">
+                    <h3 style="color:white; font-size:1.8rem; margin-bottom:0.5rem;">David Chen</h3>
+                    <span style="background:var(--accent-color); color:#0f172a; padding:2px 10px; border-radius:10px; font-size:0.8rem; font-weight:bold;">VP of Engineering</span>
+                    <p style="margin-top:1.5rem; line-height:1.6;">David leads our engineering teams, fostering a culture of code excellence and rapid innovation.</p>
+                </div>
+            </div>
+
+            <!-- Founder 5 -->
+            <div class="team-card reveal-right" onclick="activateCard(this)">
+                <img src="https://picsum.photos/seed/founder5/400/500" alt="Founder 5">
+                <div class="team-name-box">
+                    <div class="team-name">Emily Davis</div>
+                    <div class="team-role">Chief Strategy Officer</div>
+                </div>
+                <div class="profile-details">
+                    <h3 style="color:white; font-size:1.8rem; margin-bottom:0.5rem;">Emily Davis</h3>
+                    <span style="background:var(--accent-color); color:#0f172a; padding:2px 10px; border-radius:10px; font-size:0.8rem; font-weight:bold;">Chief Strategy Officer</span>
+                    <p style="margin-top:1.5rem; line-height:1.6;">Emily identifies new market opportunities and steers the company's long-term growth strategies.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- OVERLAY -->
+    <div class="founders-overlay" id="overlay"></div>
+
+    <!-- CORE MEMBERS -->
+    <section class="section" style="background: #0b1120;">
+        <div class="reveal-up">
+            <h2 class="section-title" style="text-align: center;">Core Team</h2>
+        </div>
+        
+        <div class="core-section reveal-up">
+            <div class="core-card">
+                <img src="https://picsum.photos/seed/core1/400/400" alt="Core Member">
+                <div class="core-name">James Wilson</div>
+                <div class="core-role">Lead Developer</div>
+            </div>
+
+            <div class="core-card">
+                <img src="https://picsum.photos/seed/core2/400/400" alt="Core Member">
+                <div class="core-name">Linda Brown</div>
+                <div class="core-role">Operations Manager</div>
+            </div>
+        </div>
+    </section>
 
     <!-- FOOTER -->
-    <footer>
+    <footer style="padding: 3rem; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); color: #666; font-size: 0.9rem;">
         <p>&copy; 2023 Theta Solutions. All rights reserved.</p>
     </footer>
 
     <!-- JAVASCRIPT -->
-<script>
-    const overlay = document.getElementById('overlay');
-    const cards = document.querySelectorAll('.team-card');
-    const grid = document.querySelector('.team-grid'); // The container
+    <script>
+        // 1. CUSTOM CURSOR
+        const cursorDot = document.querySelector('[data-cursor-dot]');
+        const cursorOutline = document.querySelector('[data-cursor-outline]');
+        window.addEventListener('mousemove', function (e) {
+            const posX = e.clientX; const posY = e.clientY;
+            cursorDot.style.left = `${posX}px`; cursorDot.style.top = `${posY}px`;
+            cursorOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 500, fill: "forwards" });
+        });
 
-    function activateCard(element) {
-        // 1. Move the clicked card INSIDE the overlay div
-        // This ensures the overlay is behind the card, not on top of it
-        overlay.appendChild(element);
+        // 2. SCROLL REVEAL
+        const revealElements = document.querySelectorAll('.reveal-up, .reveal-left, .reveal-right');
+        const revealOnScroll = () => {
+            const windowHeight = window.innerHeight; const elementVisible = 100;
+            revealElements.forEach((reveal) => {
+                const elementTop = reveal.getBoundingClientRect().top;
+                if (elementTop < windowHeight - elementVisible) reveal.classList.add('active-reveal');
+            });
+        };
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll();
 
-        // 2. Add active class to the clicked card
-        element.classList.add('active');
-        
-        // 3. Create the close button
-        const closeBtn = document.createElement('button');
-        closeBtn.className = 'close-btn';
-        closeBtn.innerHTML = '&times;';
-        closeBtn.onclick = closeOverlay;
-        
-        // 4. Append close button to the active card
-        element.appendChild(closeBtn);
+        // 3. TEAM CARD INTERACTION
+        const overlay = document.getElementById('overlay');
+        const cards = document.querySelectorAll('.team-card');
+        const grid = document.querySelector('.team-grid');
 
-        // 5. Show the overlay
-        overlay.classList.add('active');
-        
-        // 6. Stop body scroll
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeOverlay() {
-        // 1. Find the active card (it is currently inside the overlay)
-        const activeCard = overlay.querySelector('.team-card.active');
-
-        if (activeCard) {
-            // 2. Remove active class
-            activeCard.classList.remove('active');
-            
-            // 3. Remove the close button
-            const btn = activeCard.querySelector('.close-btn');
-            if(btn) btn.remove();
-
-            // 4. MOVE THE CARD BACK TO THE GRID
-            // This is crucial so it appears in the right spot next time
-            grid.appendChild(activeCard);
+        function activateCard(element) {
+            overlay.appendChild(element);
+            element.classList.add('active');
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'close-btn';
+            closeBtn.innerHTML = '&times;';
+            closeBtn.onclick = closeOverlay;
+            element.appendChild(closeBtn);
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
-        
-        // 5. Hide the overlay
-        overlay.classList.remove('active');
-        document.body.style.overflow = 'auto'; // Restore scroll
-    }
 
-    // Click overlay to close
-    overlay.addEventListener('click', closeOverlay);
-</script>
+        function closeOverlay() {
+            const activeCard = overlay.querySelector('.team-card.active');
+            if (activeCard) {
+                activeCard.classList.remove('active');
+                const btn = activeCard.querySelector('.close-btn');
+                if(btn) btn.remove();
+                grid.appendChild(activeCard);
+            }
+            overlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
 
+        overlay.addEventListener('click', closeOverlay);
+    </script>
 </body>
 </html>
