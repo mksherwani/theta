@@ -125,7 +125,6 @@ nav a:hover { color: var(--accent-color); }
 
 .circle-item:hover { transform: translateY(-10px); }
 
-/* THIS MAKES THEM CIRCLES */
 .circle-visual {
     width: 250px;
     height: 250px;
@@ -208,7 +207,7 @@ footer {
 }
 
 /* ============================================================
-            ABOUT PAGE STYLES
+   ABOUT PAGE STYLES (SPLIT LAYOUT VERSION)
    ============================================================ */
 
 /* 1. HERO SECTION */
@@ -257,7 +256,7 @@ footer {
     width: 220px;
     background: white;
     border-radius: 20px;
-    overflow: hidden; /* Keeps image inside corners */
+    overflow: hidden;
     box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     cursor: pointer;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -265,7 +264,6 @@ footer {
     animation: popIn 0.6s ease forwards;
 }
 
-/* Staggered entry */
 .team-card:nth-child(1) { animation-delay: 0.5s; }
 .team-card:nth-child(2) { animation-delay: 0.6s; }
 .team-card:nth-child(3) { animation-delay: 0.7s; }
@@ -279,7 +277,7 @@ footer {
     object-fit: cover;
     filter: grayscale(100%);
     transition: all 0.5s ease;
-    display: block; /* Removes bottom spacing */
+    display: block;
 }
 
 /* NAME BOX (Default State) */
@@ -315,6 +313,9 @@ footer {
     padding: 0 2rem;
     text-align: left;
     transition: all 0.5s ease;
+    width: 0;
+    display: inline-block;
+    vertical-align: top;
 }
 
 /* --- HOVER EFFECTS --- */
@@ -327,7 +328,7 @@ footer {
     transform: scale(1.1);
 }
 
-/* --- OVERLAY (The Background Blur) --- */
+/* --- OVERLAY --- */
 .founders-overlay {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -347,60 +348,71 @@ footer {
     pointer-events: auto;
 }
 
-/* --- ACTIVE / CLICKED STATE --- */
+/* --- ACTIVE / CLICKED STATE (SPLIT LAYOUT) --- */
 .team-card.active {
-    position: relative; /* Key: Relative inside Flex container */
-    width: 450px;
+    position: relative;
+    width: 800px;
+    max-width: 90vw;
     height: auto;
     z-index: 1000;
-    transform: scale(1) !important; /* Reset hover scale */
+    transform: scale(1) !important;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     cursor: default;
     pointer-events: auto;
     opacity: 1;
-    animation: none; /* Stop entry animation */
+    animation: none;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    overflow: visible;
 }
 
-/* 1. Enlarge the Image */
-.team-card.active img {
-    height: 350px;
-    filter: grayscale(0%);
-    transform: none !important; /* Reset hover transform */
-}
-
-/* 2. Hide the small Name Box */
+/* Hide the bottom name box when active */
 .team-card.active .team-name-box {
     display: none;
 }
 
-/* 3. Show the Details Text */
+/* LEFT SIDE: The Image */
+.team-card.active img {
+    width: 45%;
+    height: 450px;
+    object-fit: cover;
+    filter: grayscale(0%);
+    transform: none !important;
+    border-radius: 20px 0 0 20px;
+    margin: 0;
+}
+
+/* RIGHT SIDE: The Details Text */
 .team-card.active .profile-details {
-    max-height: 500px; /* Expand to fit content */
+    max-height: 600px;
     opacity: 1;
-    padding: 2rem;
+    width: 55%;
+    padding: 3rem 2rem;
+    height: 450px;
+    overflow-y: auto;
+    border-radius: 0 20px 20px 0;
+    background: #fafafa;
+    box-shadow: inset 10px 0 20px -10px rgba(0,0,0,0.1);
+    margin: 0;
 }
 
-.profile-details h3 {
-    font-size: 1.8rem;
-    color: var(--primary-color);
-    margin-bottom: 0.5rem;
-}
-
-.profile-details .role-badge {
-    display: inline-block;
-    background: var(--accent-color);
-    color: var(--bg-dark);
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
-}
-
-.profile-details p {
-    color: #555;
-    line-height: 1.7;
-    font-size: 1rem;
+/* Mobile Adjustment for Active Card */
+@media (max-width: 768px) {
+    .team-card.active {
+        flex-direction: column;
+        width: 90%;
+    }
+    .team-card.active img {
+        width: 100%;
+        height: 300px;
+        border-radius: 20px 20px 0 0;
+    }
+    .team-card.active .profile-details {
+        width: 100%;
+        height: auto;
+        border-radius: 0 0 20px 20px;
+    }
 }
 
 /* Close Button */
