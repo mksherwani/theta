@@ -162,46 +162,60 @@
     </footer>
 
     <!-- JAVASCRIPT -->
-    <script>
-        const overlay = document.getElementById('overlay');
-        const cards = document.querySelectorAll('.team-card');
+<script>
+    const overlay = document.getElementById('overlay');
+    const cards = document.querySelectorAll('.team-card');
+    const grid = document.querySelector('.team-grid'); // The container
 
-        function activateCard(element) {
-            // Add active class to clicked card
-            element.classList.add('active');
-            
-            // Create a close button dynamically
-            const closeBtn = document.createElement('button');
-            closeBtn.className = 'close-btn';
-            closeBtn.innerHTML = '&times;';
-            closeBtn.onclick = closeOverlay;
-            
-            // Append close button to the active card
-            element.appendChild(closeBtn);
+    function activateCard(element) {
+        // 1. Move the clicked card INSIDE the overlay div
+        // This ensures the overlay is behind the card, not on top of it
+        overlay.appendChild(element);
 
-            // Show overlay
-            overlay.classList.add('active');
+        // 2. Add active class to the clicked card
+        element.classList.add('active');
+        
+        // 3. Create the close button
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'close-btn';
+        closeBtn.innerHTML = '&times;';
+        closeBtn.onclick = closeOverlay;
+        
+        // 4. Append close button to the active card
+        element.appendChild(closeBtn);
+
+        // 5. Show the overlay
+        overlay.classList.add('active');
+        
+        // 6. Stop body scroll
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeOverlay() {
+        // 1. Find the active card (it is currently inside the overlay)
+        const activeCard = overlay.querySelector('.team-card.active');
+
+        if (activeCard) {
+            // 2. Remove active class
+            activeCard.classList.remove('active');
             
-            // Prevent body scroll when modal is open
-            document.body.style.overflow = 'hidden';
+            // 3. Remove the close button
+            const btn = activeCard.querySelector('.close-btn');
+            if(btn) btn.remove();
+
+            // 4. MOVE THE CARD BACK TO THE GRID
+            // This is crucial so it appears in the right spot next time
+            grid.appendChild(activeCard);
         }
+        
+        // 5. Hide the overlay
+        overlay.classList.remove('active');
+        document.body.style.overflow = 'auto'; // Restore scroll
+    }
 
-        function closeOverlay() {
-            // Remove active classes
-            cards.forEach(card => {
-                card.classList.remove('active');
-                // Remove the close button if it exists
-                const btn = card.querySelector('.close-btn');
-                if(btn) btn.remove();
-            });
-            
-            overlay.classList.remove('active');
-            document.body.style.overflow = 'auto'; // Restore scroll
-        }
-
-        // Click overlay to close
-        overlay.addEventListener('click', closeOverlay);
-    </script>
+    // Click overlay to close
+    overlay.addEventListener('click', closeOverlay);
+</script>
 
 </body>
 </html>
